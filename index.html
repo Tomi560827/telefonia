@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Celulares</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      text-align: center;
+      padding: 10px;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .form-container {
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 10px;
+      margin: 5px 0;
+      width: 200px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      cursor: pointer;
+    }
+    .add-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .edit-btn {
+      background-color: #2196F3;
+      color: white;
+    }
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Gestión de Celulares</h1>
+  
+  
+  <div class="form-container">
+    <label for="marca">Marca:</label>
+    <input type="text" id="marca" placeholder="Marca del celular" />
+    <br />
+    <label for="modelo">Modelo:</label>
+    <input type="text" id="modelo" placeholder="Modelo del celular" />
+    <br />
+    <label for="precio">Precio:</label>
+    <input type="number" id="precio" placeholder="Precio del celular" />
+    <br />
+    <button class="add-btn" onclick="agregarCelular()">Agregar Celular</button>
+  </div>
+
+  <h2>Informe de Celulares</h2>
+  <table id="tabla-celulares">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Precio</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <script>
+    let celulares = [];
+    let idCounter = 1;
+
+    
+    function agregarCelular() {
+      const marca = document.getElementById("marca").value;
+      const modelo = document.getElementById("modelo").value;
+      const precio = document.getElementById("precio").value;
+
+      if (marca && modelo && precio) {
+        celulares.push({
+          id: idCounter++,
+          marca: marca,
+          modelo: modelo,
+          precio: `$${precio}`
+        });
+        limpiarFormulario();
+        actualizarTabla();
+      } else {
+        alert("Por favor, completa todos los campos.");
+      }
+    }
+
+    function limpiarFormulario() {
+      document.getElementById("marca").value = "";
+      document.getElementById("modelo").value = "";
+      document.getElementById("precio").value = "";
+    }
+
+   
+    function actualizarTabla() {
+      const tbody = document.querySelector("#tabla-celulares tbody");
+      tbody.innerHTML = "";
+
+      celulares.forEach((celular) => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td>${celular.id}</td>
+          <td>${celular.marca}</td>
+          <td>${celular.modelo}</td>
+          <td>${celular.precio}</td>
+          <td>
+            <button class="edit-btn" onclick="editarCelular(${celular.id})">Editar</button>
+            <button class="delete-btn" onclick="eliminarCelular(${celular.id})">Eliminar</button>
+          </td>
+        `;
+        tbody.appendChild(fila);
+      });
+    }
+
+   
+    function editarCelular(id) {
+      const celular = celulares.find((c) => c.id === id);
+
+      if (celular) {
+        const nuevaMarca = prompt("Editar Marca:", celular.marca);
+        const nuevoModelo = prompt("Editar Modelo:", celular.modelo);
+        const nuevoPrecio = prompt("Editar Precio:", celular.precio.replace("$", ""));
+
+        if (nuevaMarca && nuevoModelo && nuevoPrecio) {
+          celular.marca = nuevaMarca;
+          celular.modelo = nuevoModelo;
+          celular.precio = `$${nuevoPrecio}`;
+          actualizarTabla();
+        } else {
+          alert("Por favor, completa todos los campos.");
+        }
+      }
+    }
+
+    function eliminarCelular(id) {
+      celulares = celulares.filter((c) => c.id !== id);
+      actualizarTabla();
+    }
+  </script>
+</body>
+</html>
